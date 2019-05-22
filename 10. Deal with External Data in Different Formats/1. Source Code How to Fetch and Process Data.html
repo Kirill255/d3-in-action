@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>How to Fetch and Process Data</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+        .bar {
+            height: 30px;
+            text-align: center;
+            margin: 10px;
+            background: pink;
+            color: red;
+            line-height: 30px;
+        }
+
+        .names {
+            height: 30px;
+            margin: 10px;
+            color: red;
+            line-height: 30px;
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        // for csv -> d3.csv(url), for xml -> d3.xml(url) 
+        d3.json("https://api.myjson.com/bins/1b8bkg").then(function (data) {
+            console.log(data);
+
+            var bars = d3.select("body").selectAll("div").data(data);
+
+            // bars
+            bars.enter().append("div").classed("bar", true)
+                .style("width", function (d) { return (d.Adge * 10) + "px"; })
+                .text(function (d) { return d.Adge; });
+
+            // labels
+            bars.enter().append("div").classed("names", true)
+                .style("left", function (d) { return (d.Adge * 10) + 15 + "px"; })
+                .style("top", function (d, i) { return (i * 40) + "px"; }) // 40 -> height: 30px; + margin: 10px;
+                .text(function (d) { return d.Name; })
+        });
+    </script>
+</body>
+
+</html>
+
+<!-- 
+    for API http://myjson.com/1b8bkg
+
+    [
+        { "Name": "Ann", "Adge": 35 },
+        { "Name": "Mile", "Adge": 30 },
+        { "Name": "Valian", "Adge": 18 },
+        { "Name": "Brad", "Adge": 21 },
+        { "Name": "Spike", "Adge": 42 },
+        { "Name": "Jessika", "Adge": 27 }
+    ]
+ -->

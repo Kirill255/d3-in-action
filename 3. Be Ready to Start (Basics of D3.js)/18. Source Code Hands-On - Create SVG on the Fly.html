@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hands-On: SVG On the Fly</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+        button {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <button onclick="addSVG();">Add</button><br />
+    <script>
+        function addSVG() {
+            var svg = d3.select("body").append("svg").attr("width", 200).attr("height", 200).style("background", "pink");
+            svg.append("rect").attr("width", 50).attr("height", 50).style("fill", "indigo")
+            //svg.append("circle").attr("r",20).attr("cx",100).attr("cy",100);
+            svg.append("g").attr("transform", "translate(35,100)")
+                .append("circle").attr("r", 20).style("fill", "deeppink");
+        }
+
+    </script>
+</body>
+
+</html>

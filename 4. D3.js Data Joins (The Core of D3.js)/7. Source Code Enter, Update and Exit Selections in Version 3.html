@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Object as Data</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.js"></script>
+    <style>
+        p {
+            background: black;
+            color: white;
+            font-size: 30px;
+            width: 100px;
+            margin: 20px;
+            padding: 10px;
+        }
+
+        .person {
+            background: indigo;
+            color: deeppink;
+            font-size: 30px;
+            width: 130px;
+            margin: 20px;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 1. numbers of Elements = numbers of Data Points (Update Selection) -->
+    <!-- <p>Chair 1</p>
+    <p>Chair 2</p>
+    <p>Chair 3</p>
+    <p>Chair 4</p> -->
+
+    <!-- 2. numbers of Data Points > numbers of Elements (Enter Selection) -->
+    <!-- <p>Chair 1</p>
+    <p>Chair 2</p>
+    <p>Chair 3</p>
+    <p>Chair 4</p> -->
+
+    <!-- 3. numbers of Data Points < numbers of Elements (Exit Selection) -->
+    <p>Chair 1</p>
+    <p>Chair 2</p>
+    <p>Chair 3</p>
+    <p>Chair 4</p>
+
+    <script>
+        // 1
+        /* var myData = ["Person 1", "Person 2", "Person 3", "Person 4"];
+        d3.selectAll("p").data(myData).text(function(d)
+        {return d;}).classed("person", true); */
+
+        // 2
+        /* var myData = ["Person 1", "Person 2", "Person 3", "Person 4", "Person 5", "Person 6"];
+        var update = d3.selectAll("p").data(myData);
+        update.enter().append("p");
+        update.text(function(d){return d;}).classed("person", true); */
+
+        // 3
+        var myData = ["Person 1", "Person 2"];
+        var update = d3.selectAll("p").data(myData);
+        update.exit().remove();
+        update.text(function (d) { return d; }).classed("person", true);
+    </script>
+</body>
+
+</html>

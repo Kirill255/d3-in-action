@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Zooming Interaction</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+    <script>
+        var width = 900, height = 600, radius = 20;
+
+        function decidePositions(num) {
+            var arr = [];
+            for (var i = 0; i < num; i++) {
+                arr.push({
+                    x: Math.random() * width - radius,
+                    y: Math.random() * height - radius
+                })
+            }
+            return arr;
+        }
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width).attr("height", height)
+            .style("background", "pink");
+
+
+        var positions = decidePositions(25);
+
+        var colors = d3.scaleOrdinal(d3.schemeDark2);
+
+        // zoom function, hover your mouse over the circle and rotate the wheel (don't click)
+        var zoom = d3.zoom()
+            .scaleExtent([1, 5]) // [min, max], our radius is 20, this means that the minimum value should be 20, and the maximum should be 100
+            .on("zoom", zoomed);
+
+        var circles = svg.selectAll("circle").data(positions);
+
+        circles.enter().append("circle")
+            .attr("r", radius)
+            .attr("cx", function (d) { return d.x; }).attr("cy", function (d) { return d.y; })
+            .attr("fill", function (d, i) { return colors(i); })
+            .call(zoom);
+
+        function zoomed() {
+            d3.select(this)
+                .attr("transform", "translate(" + d3.event.transform.x + "," + d3.event.transform.y + ") scale(" + d3.event.transform.k + ")"); // .attr("transform", "translate() scale()")
+        }
+    </script>
+</body>
+
+</html>

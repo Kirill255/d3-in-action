@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Family Tree with Elbow Connections</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+        rect {
+            fill: white;
+            stroke: silver;
+            width: 80px;
+            height: 40px;
+            stroke-width: 2;
+        }
+
+        path {
+            fill: none;
+            stroke: silver;
+            stroke-width: 2;
+        }
+
+        text {
+            dominant-baseline: middle;
+            text-anchor: middle;
+        }
+
+        .bigger {
+            font-size: 20px;
+        }
+
+        #details {
+            position: absolute;
+            left: 270px;
+            top: 120px;
+            width: 200px;
+            height: 30px;
+            background: gray;
+            color: white;
+            visibility: hidden;
+            border-radius: 15px;
+            text-align: center;
+            padding: 15px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="details"></div>
+
+    <script>
+        var svg = d3.select("body").append("svg")
+            .attr("width", 900).attr("height", 600)
+            .append("g").attr("transform", "translate(50,50)");
+
+        var data = [
+            { "child": "John", "parent": "", "spouse": "Isabella" },
+            { "child": "Aaron", "parent": "Kevin" },
+            { "child": "Kevin", "parent": "John", "spouse": "Emma" },
+            { "child": "Hannah", "parent": "Ann", "spouse": "Williams" },
+            { "child": "Rose", "parent": "Sarah" },
+            { "child": "Ann", "parent": "John", "spouse": "George" },
+            { "child": "Sarah", "parent": "Kevin", "spouse": "James" },
+            { "child": "Mark", "parent": "Ann" },
+            { "child": "Angel", "parent": "Sarah" },
+            { "child": "Tom", "parent": "Hannah" }
+        ];
+
+        var dataStructure = d3.stratify()
+            .id(function (d) { return d.child; })
+            .parentId(function (d) { return d.parent; })(data);
+
+        var treeStructure = d3.tree().size([650, 300]);
+        var information = treeStructure(dataStructure);
+        console.log(information.descendants());
+        console.log(information.links());
+
+        // in this example, connections must be before rectangles to overlap styles (rect {fill: white;}), just try to swap
+        var connections = svg.append("g").selectAll("path")
+            .data(information.links());
+
+        connections.enter().append("path")
+            .attr("d", function (d) {
+                return "M" + d.source.x + "," + d.source.y + " v 50 H" + d.target.x + " V" + d.target.y;
+            });
+
+        var rectangles = svg.append("g").selectAll("rect")
+            .data(information.descendants());
+
+        rectangles.enter().append("rect")
+            .attr("x", function (d) { return d.x - 40; })
+            .attr("y", function (d) { return d.y - 20; })
+            .on("mousedown", function (d) {
+                d3.select("#details")
+                    .style("visibility", "visible")
+                    .html(function () {
+                        if (d.data.spouse != undefined) {
+                            return "Spouse: " + d.data.spouse;
+                        } else {
+                            return "No Spouse";
+                        }
+                    });
+            })
+            .on("mouseup", function () {
+                d3.select("#details").style("visibility", "hidden");
+            });;
+
+        var names = svg.append("g").selectAll("text")
+            .data(information.descendants());
+
+        names.enter().append("text")
+            .text(function (d) { return d.data.child; })
+            .attr("x", function (d) { return d.x; })
+            .attr("y", function (d) { return d.y; })
+            .classed("bigger", true);
+
+    </script>
+</body>
+
+</html>

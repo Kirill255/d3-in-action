@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Horizontal Bar Chart</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+        div {
+            height: 25px;
+            margin: 10px;
+            background: pink;
+            color: red;
+            text-align: center;
+            line-height: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        var numbers = [31, 25, 35, 18, 9, 14];
+        // var numbers = [3100, 250, 35, 1800, 90, 140];
+        var bars = d3.select("body").selectAll("div").data(numbers);
+        bars.enter().append("div")
+            .style("width", function (d) { return (d * 10) + "px"; })
+            .text(function (d) { return d; })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hands-On Practice - Axes</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+        div {
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <label for="x">Horizontal: </label>
+        <select id="x" onchange="displayAxis();">
+            <option value="select">Select</option>
+            <option value="top">Top</option>
+            <option value="bottom">Bottom</option>
+        </select>
+        <label for="y">Vertical: </label>
+        <select id="y" onchange="displayAxis();">
+            <option value="select">Select</option>
+            <option value="left">Left</option>
+            <option value="right">Right</option>
+        </select>
+    </div>
+    <script>
+        var width = 500; // длина оси X
+        var height = 500; // длина оси Y
+        var margin = 30; // отступ
+        var xAxisLength = width - 2 * margin; // длина оси X = ширина контейнера svg - отступ слева и справа
+        var yAxisLength = height - 2 * margin; // длина оси Y = высота контейнера svg - отступ сверху и снизу
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width).attr("height", height)
+            .style("padding", "10px").style("background", "pink");
+
+        function displayAxis() {
+            // console.log(event);
+            var direction = document.getElementById(event.target.id).value;
+            d3.select("g").remove();
+            // console.log(direction)
+
+            var scale = d3.scaleLinear()
+                .domain([0, 600])
+                .range([0, xAxisLength]);
+
+            var ourAxis = "";
+            var distance = margin; // 30 (1 variant)
+            // var distance = margin * 2; // 60 (2 variant)
+
+            if (direction === "select") {
+                d3.select("g").remove();
+                return;
+            }
+            if (direction === "top") {
+                ourAxis = d3.axisTop(scale);
+            } else if (direction === "bottom") {
+                ourAxis = d3.axisBottom(scale);
+                distance = (height - margin); // (1 variant)
+                // distance = yAxisLength; // (2 variant)
+            } else if (direction === "left") {
+                ourAxis = d3.axisLeft(scale);
+            } else {
+                ourAxis = d3.axisRight(scale);
+                distance = (width - margin); // (1 variant)
+                // distance = xAxisLength; // (2 variant)
+            }
+
+            svg.append("g").attr("transform", function () {
+                if (direction === "top" || direction === "bottom") {
+                    return "translate(" + margin + "," + distance + ")";
+                } else {
+                    return "translate(" + distance + "," + margin + ")";
+                }
+            }).call(ourAxis);
+        }
+    </script>
+</body>
+
+</html>

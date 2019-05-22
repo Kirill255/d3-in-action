@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Arc Generator</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+    <script>
+        var width = 700, height = 600, fullAngle = 2 * Math.PI;
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width).attr("height", height)
+            .style("background", "pink");
+
+        var data = [
+            { startAngle: 0, endAngle: 1.5 },
+            { startAngle: 1.5, endAngle: 3.4 },
+            { startAngle: 3.4, endAngle: 4.2 },
+            { startAngle: 4.2, endAngle: 5.9 },
+            { startAngle: 5.9, endAngle: 6.28 }
+        ];
+
+        var segments = d3.arc()
+            .innerRadius(20)
+            .outerRadius(125)
+            .padAngle(.05)
+            .padRadius(50) // 150
+            .cornerRadius(4);
+
+        var sections = svg.append("g")
+            .attr("transform", "translate(300, 300)")
+            .selectAll("path")
+            .data(data);
+
+        sections.enter().append("path").attr("d", segments).attr("fill", "gray");
+    </script>
+</body>
+
+</html>

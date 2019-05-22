@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Quantize, Quantile & Threshold Scales</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+    <script>
+        // var quantizeData = [1, 15, 26, 48, 51, 57, 63, 79, 82, 99];
+        var quantizeData = [100, 15, 26, 39, 51, 57, 63, 79, 82, 99];
+        var quantileData = [100, 220, 2650, 39689, 51485, 576892, 633402, 7965320, 8269467, 99568235];
+        var thresholdData = [-67, 2, 9, 125, 550, 6200, 9853, 13678, 5862303, 96587983];
+        var outputRange = ["red", "green", "deeppink", "blue", "yellow"];
+        // [0-19], [20-39], [40-59], [60-79], [80-100]
+
+        var quantizeScale = d3.scaleQuantize()
+            .domain([0, 100])
+            .range(outputRange);
+
+        var quantileScale = d3.scaleQuantile()
+            .domain(quantileData)
+            .range(outputRange);
+
+        var thresholdScale = d3.scaleThreshold()
+            .domain([0, 10, 1000, 100000, 10000000])
+            .range(outputRange);
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", 500)
+            .attr("height", 200)
+            .style("background", "pink");
+
+        var circles = svg.selectAll("circle");
+        circles.data(quantizeData).enter().append("circle")
+            .attr("r", 20)
+            .attr("cx", function (d, i) { return (i + 1) * 45; })
+            .attr("cy", 40)
+            .style("fill", function (d) { return quantizeScale(d); });
+
+        circles.data(quantileData).enter().append("circle")
+            .attr("r", 20)
+            .attr("cx", function (d, i) { return (i + 1) * 45; })
+            .attr("cy", 100)
+            .style("fill", function (d) { return quantileScale(d); });
+
+        circles.data(thresholdData).enter().append("circle")
+            .attr("r", 20)
+            .attr("cx", function (d, i) { return (i + 1) * 45; })
+            .attr("cy", 160)
+            .style("fill", function (d) { return thresholdScale(d); });
+    </script>
+</body>
+
+</html>
+
+<!-- 
+    var quantizeData = [1, 15, 26, 48, 51, 57, 63, 79, 82, 99];
+    var outputRange = ["red", "green", "deeppink", "blue", "yellow"]; // 5 elements
+
+    var quantizeScale = d3.scaleQuantize()
+        .domain([0, 100]) // 0 - 100
+        .range(outputRange); // 5 elements
+
+    This means that we must divide the domain into 5 chunks ([0-19], [20-39], [40-59], [60-79], [80-100]) and then assign each of them the appropriate color:
+    1, 15 -> "red" ([0-19])
+    26 -> "green" ([20-39])
+    48, 51, 57 -> "deeppink" ([40-59])
+    63, 79 -> "blue" ([60-79])
+    82, 99 -> "yellow" ([80-100])
+
+
+
+    var quantileData = [100, 220, 2650, 39689, 51485, 576892, 633402, 7965320, 8269467, 99568235];
+    var outputRange = ["red", "green", "deeppink", "blue", "yellow"]; // 5 elements
+
+    var quantileScale = d3.scaleQuantile()
+        .domain(quantileData)
+        .range(outputRange);
+
+    100, 220 -> "red" ([100-220])
+    2650, 39689 -> "green" ([2650-39689])
+    51485, 576892 -> "deeppink" ([51485-576892])
+    633402, 7965320 -> "blue" ([633402-7965320])
+    8269467, 99568235 -> "yellow" ([8269467-99568235])
+
+
+
+    var thresholdData = [-67, 2, 9, 125, 550, 6200, 9853, 13678, 5862303, 96587983];
+    var outputRange = ["red", "green", "deeppink", "blue", "yellow"]; // 5 elements
+
+    var thresholdScale = d3.scaleThreshold()
+        .domain([0, 10, 1000, 100000, 10000000])
+        .range(outputRange);
+
+    -62 -> "red" ([-∞ - -1]) (0)
+    2, 9 -> "green" ([0-9]) (10)
+    125, 550 -> "deeppink" ([10-999]) (1000)
+    6200, 9853, 13678 -> "blue" ([1000-99999]) (100000)
+    5862303, 96587983 -> "yellow" ([100000-10000000]) (10000000)
+ -->

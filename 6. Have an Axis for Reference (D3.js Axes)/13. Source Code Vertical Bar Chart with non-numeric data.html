@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vertical Bar Chart with non-numeric data</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+        g path,
+        g line {
+            fill: none;
+            stroke: #333;
+        }
+
+        g .grid-line {
+            stroke: #000;
+            stroke-opacity: 0.2;
+        }
+
+        g.y-axis text {
+            font: 9px Verdana;
+            text-anchor: end;
+            /* default value -> middle, on X-asix label text -> middle, and on Y-asix label text -> end value now! */
+        }
+    </style>
+</head>
+
+<body>
+
+    <script>
+        var height = 500;
+        var width = 500;
+        var margin = 30;
+        var xAxisLength = width - 2 * margin; // длина оси X= ширина контейнера svg - отступ слева и справа
+        var yAxisLength = height - 2 * margin; // длина оси Y = высота контейнера svg - отступ сверху и снизу
+        var data = [
+            { name: "Ливерпуль", score: 54 },
+            { name: "Ман. Юнайтед", score: 62 },
+            { name: "Арсенал", score: 66 },
+            { name: "Челси", score: 70 },
+            { name: "Ман. Сити", score: 61 },
+        ];
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .style("padding", "20px")
+            .style("background", "pink");
+
+        var xScale = d3.scaleBand()
+            .domain(data.map(function (d) { return d.name; }))
+            .range([0, xAxisLength + margin])
+            .round(true)
+            // .paddingOuter(.1)
+            // .paddingInner(.1)
+            .padding(.1); // both
+
+        var yScale = d3.scaleLinear()
+            .domain([
+                d3.min(data, function (d) { return d.score - 10; }),
+                d3.max(data, function (d) { return d.score + 10; })
+            ])
+            .range([yAxisLength, 0]);
+
+        var xAxis = d3.axisBottom(xScale);
+        var yAxis = d3.axisLeft(yScale);
+
+        svg.append("g")
+            .attr("class", "x-axis")
+            .attr("transform", "translate(" + margin + "," + (height - margin) + ")")
+            .call(xAxis);
+
+        svg.append("g")
+            .attr("class", "y-axis")
+            .attr("transform", "translate(" + margin + "," + margin + ")")
+            .call(yAxis);
+
+        // рисуем горизонтальные линии 
+        d3.selectAll("g.y-axis g.tick")
+            .append("line")
+            .classed("grid-line", true)
+            .attr("x1", 0)
+            .attr("y1", 0)
+            .attr("x2", xAxisLength)
+            .attr("y2", 0);
+
+        // функция для получения цветов
+        var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+        // создаем элемент g с набором столбиков
+        svg.append("g")
+            .attr("transform", "translate(" + margin + ", 0)")
+            .selectAll(".bar")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function (d) { return xScale(d.name); })
+            .attr("width", xScale.bandwidth())
+            .attr("y", function (d) { return yScale(d.score); })
+            .attr("height", function (d) { return height - yScale(d.score) - 30; })
+            .attr("fill", function (d) { return color(d.name); });
+
+    </script>
+</body>
+
+</html>
+
+<!-- 
+    https://metanit.com/web/d3js/4.10.php
+    https://github.com/d3/d3/blob/master/CHANGES.md#scales-d3-scale
+    https://github.com/d3/d3-scale/blob/master/README.md#band-scales
+ -->

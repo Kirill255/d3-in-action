@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Append & Insert</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+    <button onclick="addElement();">Add Element</button>
+    <script>
+        function addElement() {
+            //d3.select("#parent").append("p").text("Last Paragraph").style("font-weight", "bold");
+            d3.select("#parent").insert("p", "p:nth-child(3)").text("Paragraph").style("font-weight", "bold");
+        }
+    </script>
+</body>
+
+</html>

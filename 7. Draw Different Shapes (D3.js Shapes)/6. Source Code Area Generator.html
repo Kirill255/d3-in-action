@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Area Genarator</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+        path {
+            fill: deeppink;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        // var points = [[0, 100], [130, 180], [260, 100], [390, 180], [520, 100]];
+        var points = [
+            { x0: 40, y0: 230, x1: 40, y1: 230 },
+            { x0: 240, y0: 370, x1: 150, y1: 210 },
+            { x0: 440, y0: 110, x1: 210, y1: 270 },
+            { x0: 290, y0: 80, x1: 320, y1: 220 }
+        ];
+        var width = 600, height = 500;
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .style("background", "pink");
+
+        // var line = d3.line(); // try to pass points(first) to see the difference between line and area
+        //var area = d3.area();
+        //var area = d3.area().y0(300);
+        var area = d3.area()
+            .x0(function (d) { return d.x0 })
+            .x1(function (d) { return d.x1 })
+            .y0(function (d) { return d.y0 })
+            .y1(function (d) { return d.y1 })
+            .curve(d3.curveStep);
+
+        svg.append("path").attr("d", area(points));
+    </script>
+</body>
+
+</html>

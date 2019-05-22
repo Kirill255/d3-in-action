@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Stack Generator</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+    <script>
+        var data = [
+            { desktops: 80, laptops: 210, printers: 50, monitors: 60 },
+            { desktops: 130, laptops: 150, printers: 30, monitors: 40 },
+            { desktops: 40, laptops: 200, printers: 45, monitors: 80 },
+            { desktops: 70, laptops: 180, printers: 65, monitors: 70 },
+            { desktops: 100, laptops: 160, printers: 70, monitors: 40 },
+            { desktops: 90, laptops: 190, printers: 80, monitors: 60 }
+        ];
+
+        var width = 600, height = 500;
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        var stack = d3.stack()
+            .keys(["desktops", "laptops", "printers", "monitors"])
+            .order(d3.stackOrderDescending); // stackOrderReverse
+
+        console.log(data);
+        console.log("--------------");
+        console.log(stack(data));
+
+        var colors = ["indigo", "silver", "pink", "purple"];
+
+        var series = svg.selectAll("g")
+            .data(stack(data))
+            .enter().append("g")
+            .style("fill", function (d, i) { return colors[i]; });
+
+        series.selectAll("rect")
+            .data(function (d) { return d; })
+            .enter().append("rect")
+            .attr("height", 25)
+            .attr("width", function (d) { return d[1] - d[0]; })
+            .attr("x", function (d) { return d[0]; })
+            .attr("y", function (d, i) { return i * 30; });
+
+    </script>
+</body>
+
+</html>

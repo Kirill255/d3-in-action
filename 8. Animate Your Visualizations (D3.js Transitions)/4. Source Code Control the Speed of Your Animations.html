@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>D3.js Transition</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+        div {
+            width: 100px;
+            height: 100px;
+            margin: 15px;
+            position: absolute;
+        }
+    </style>
+</head>
+
+<body>
+    <button onclick="moveBoxes();">Move!</button>
+
+    <script>
+        var data = [d3.easeCubic, d3.easePolyIn, d3.easeQuad, d3.easeBack, d3.easeBounce];
+
+        var colors = d3.scaleOrdinal(d3.schemeDark2);
+
+        var boxes = d3.selectAll("div").data(data);
+
+        boxes.enter().append("div")
+            .style("background-color", function (d, i) { return colors(i); })
+            .style("top", function (d, i) { return (i + .2) * 120 + "px"; });
+
+        function moveBoxes() {
+            d3.selectAll("div").each(function (d) {
+                d3.select(this).transition()
+                    .duration(10000)
+                    .ease(d)
+                    // .style("left", "900px");
+                    .style("right", "0px");
+            })
+        }
+    </script>
+</body>
+
+</html>

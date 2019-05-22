@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Transition Chaining</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+    <script>
+        var svg = d3.select("body").append("svg")
+            .attr("width", 600).attr("height", 500)
+            .style("background", "gray");
+
+        var circle = svg.append("circle")
+            .attr("cx", 50).attr("cy", 50).attr("r", 40)
+            .style("fill", "pink");
+
+        function methodChaining() {
+            d3.select("circle")
+                .transition().duration(2000) // move to
+                .attr("cx", 500).attr("cy", 400)
+                .transition().duration(2000) // and only then! increase the size and change color
+                .attr("r", 80).style("fill", "deeppink")
+                .transition().duration(2000) // and only then! decrease the size and move to and change color
+                .attr("cx", 50).attr("cy", 50)
+                .attr("r", 40).style("fill", "pink");
+        }
+
+        methodChaining(); // start right now
+        setInterval(methodChaining, 6000); // repeat
+    </script>
+</body>
+
+</html>

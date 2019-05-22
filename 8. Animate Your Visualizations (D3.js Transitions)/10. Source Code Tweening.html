@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tween - In between</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+        #content {
+            width: 200px;
+            height: 60px;
+            background-color: gray;
+            color: white;
+            font-size: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="text" id="content" value="0" disabled /><br />
+    <button onclick="showNumbers();">Show</button>
+
+    <script>
+        function showNumbers() {
+            d3.select("#content").transition().duration(5000)
+                .ease(d3.easeLinear)
+                // .attr("value", 100) // will be float values, like 1.000001, 1.000002, 1.000003, .., 2.931834, .., 99.003924, .., 100 
+                .attrTween("value", function () {
+                    var numbers = d3.interpolateRound(0, 100); // start from initial value, initial value in our input(input.value) is 0, returns only integer values, like 1, 2, 3, .., 99, 100
+                    return function (i) { return numbers(i); };
+                })
+                .styleTween("font-size", function () {
+                    var size = d3.interpolateString("10px", "60px"); // start from initial value, initial value in our styles(#content) is 10px 
+                    return function (i) { return size(i); };
+                });
+        }
+    </script>
+</body>
+
+</html>

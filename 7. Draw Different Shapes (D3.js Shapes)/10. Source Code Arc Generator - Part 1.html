@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Arc Generator</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+</head>
+
+<body>
+    <script>
+        var width = 800, height = 600, fullAngle = 2 * Math.PI;
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width).attr("height", height)
+            .style("background", "pink");
+
+        var circle = d3.arc()
+            .innerRadius(0)
+            .outerRadius(100)
+            .startAngle(0)
+            .endAngle(fullAngle);
+
+        var circle2 = d3.arc()
+            .innerRadius(80) // 0
+            .outerRadius(100)
+            .startAngle(0)
+            .endAngle(fullAngle);
+
+        var halfCircle = d3.arc()
+            .innerRadius(0)
+            .outerRadius(100)
+            .startAngle(0)
+            .endAngle(fullAngle / 2);
+
+        var quarterCircle = d3.arc()
+            .innerRadius(0)
+            .outerRadius(100)
+            .startAngle(0)
+            .endAngle(fullAngle / 4);
+
+        // we can pass all settings as object
+        var customArc = d3.arc()({ innerRadius: 70, outerRadius: 100, startAngle: 0, endAngle: fullAngle / 4 });
+
+        svg.append("g").attr("transform", "translate(150, 150)").append("path").attr("d", circle).attr("fill", "deeppink");
+
+        svg.append("g").attr("transform", "translate(400, 150)").append("path").attr("d", circle2).attr("fill", "deeppink");
+
+        svg.append("g").attr("transform", "translate(150, 400)").append("path").attr("d", halfCircle).attr("fill", "indigo");
+
+        svg.append("g").attr("transform", "translate(400, 400)").append("path").attr("d", quarterCircle).attr("fill", "indigo");
+
+        svg.append("g").attr("transform", "translate(650, 400)").append("path").attr("d", customArc).attr("fill", "indigo");
+    </script>
+</body>
+
+</html>

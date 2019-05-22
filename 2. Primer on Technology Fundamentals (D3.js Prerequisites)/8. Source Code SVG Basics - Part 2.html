@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SVG Basics</title>
+    <style>
+        svg {
+            background: pink;
+        }
+
+        polygon {
+            fill: purple;
+            stroke: green;
+            stroke-width: 5;
+        }
+
+        polyline {
+            stroke: blue;
+            stroke-width: 5;
+            fill: none;
+        }
+
+        path {
+            fill: green;
+            stroke: blue;
+        }
+
+        circle {
+            fill: red;
+        }
+    </style>
+</head>
+
+<body>
+    <svg width="600" height="600">
+        <!-- <polygon points="450,100 550,100 500,200"></polygon>
+        <polygon points="100,100 200,100 300,200 200,300 100,300 0,200"></polygon> 
+        <polyline points="0,50 50,50 50,100 100,100 100,150 150,150 150,200"></polyline>
+        <path d="M10 10 L100 50 h50 v150 L50 100 Z"></path>-->
+
+        <path d="M50 100 h100 v100 L50 200"></path>
+        <circle cx="50" cy="100" r="5"></circle>
+        <circle cx="150" cy="100" r="5"></circle>
+        <circle cx="150" cy="200" r="5"></circle>
+        <circle cx="50" cy="200" r="5"></circle>
+    </svg>
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Draggable Elements</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+        .changing {
+            fill: white;
+            stroke: black;
+            stroke-width: 4;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        var width = 800, height = 600;
+
+        function decidePositions(n) {
+            var arr = [];
+            for (var i = 0; i < n; i++) {
+                arr.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height
+                })
+            }
+            return arr;
+        }
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width).attr("height", height)
+            .style("background", "pink");
+
+        var positions = decidePositions(20); // create data
+
+        var colors = d3.scaleOrdinal(d3.schemePaired);
+
+        // drag function
+        var drag = d3.drag()
+            .on("drag", moving) // required
+            .on("start", started) // optional
+            .on("end", over); // optional
+
+        var circles = svg.selectAll("circle").data(positions);
+
+        circles.enter().append("circle")
+            .attr("cx", function (d) { return d.x; })
+            .attr("cy", function (d) { return d.y; })
+            .attr("r", 25).attr("fill", function (d, i) { return colors(i); })
+            .call(drag);
+
+        function moving() {
+            d3.select(this).attr("cx", d3.event.x).attr("cy", d3.event.y); // current position
+        }
+
+        function started() {
+            d3.select(this).classed("changing", true);
+        }
+
+        function over() {
+            d3.select(this).classed("changing", false);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tree layout - Basic</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+        circle {
+            fill: blue;
+            stroke: none;
+        }
+
+        line {
+            stroke: red;
+            fill: none;
+        }
+    </style>
+</head>
+
+<body>
+    <svg width="800" height="800">
+        <g transform="translate(20,20)">
+            <g id="circles"></g>
+            <g id="lines"></g>
+            <g id="info"></g>
+        </g>
+    </svg>
+
+    <script>
+        var data = {
+            "name": "1",
+            "children": [
+                {
+                    "name": "1.1",
+                    "children": [
+                        { "name": "1.1.1" },
+                        { "name": "1.1.2" },
+                        { "name": "1.1.3" }
+                    ]
+                },
+                {
+                    "name": "1.2",
+                    "children": [{ "name": "1.2.1" }]
+                }
+            ]
+        };
+
+        var dataStructure = d3.hierarchy(data);
+        //console.log(dataStructure);
+
+        var treeLayout = d3.tree().size([300, 150]);
+        var information = treeLayout(dataStructure)
+        console.log(information.descendants());
+        console.log(information.links());
+
+        var circles = d3.select("svg g#circles")
+            .selectAll("circle")
+            .data(information.descendants());
+
+        circles.enter().append("circle")
+            // .attr("cx", function (d) { return d.x; }) // vertical graph
+            // .attr("cy", function (d) { return d.y; })
+            .attr("cx", function (d) { return d.y; }) // or horizontal graph
+            .attr("cy", function (d) { return d.x; })
+            .attr("r", 5);
+
+        var content = d3.select("svg g#info")
+            .selectAll("text")
+            .data(information.descendants());
+
+        content.enter().append("text")
+            .text(function (d) { return d.data.name; })
+            // .attr("x", function (d) { return d.x + 5; }) // vertical graph
+            // .attr("y", function (d) { return d.y + 5; });
+            .attr("x", function (d) { return d.y - 6; }) // or horizontal graph
+            .attr("y", function (d) { return d.x - 8; });
+
+        var connections = d3.select("svg g#lines")
+            .selectAll("line")
+            .data(information.links());
+
+        connections.enter().append("line")
+            // .attr("x1", function (d) { return d.source.x; }) // vertical graph
+            // .attr("y1", function (d) { return d.source.y; })
+            // .attr("x2", function (d) { return d.target.x })
+            // .attr("y2", function (d) { return d.target.y });
+            .attr("x1", function (d) { return d.source.y; }) // or horizontal graph
+            .attr("y1", function (d) { return d.source.x; })
+            .attr("x2", function (d) { return d.target.y })
+            .attr("y2", function (d) { return d.target.x });
+    </script>
+</body>
+
+</html>
