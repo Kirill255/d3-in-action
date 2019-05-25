@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vertical Bar Chart with non-numeric data 2</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    </style>
+</head>
+
+<body>
+    <div class="canvas"></div>
+
+    <script>
+        // create margins & dimensions
+        const width = 600;
+        const height = 600;
+        const margin = { top: 20, right: 20, bottom: 100, left: 100 };
+        const graphWidth = 600 - margin.left - margin.right;
+        const graphHeight = 600 - margin.top - margin.bottom;
+
+        const data = [
+            { "name": "veg soup", "orders": 200 }, { "name": "veg curry", "orders": 600 },
+            { "name": "veg pasta", "orders": 300 }, { "name": "veg burger", "orders": 700 },
+            { "name": "veg surprise", "orders": 1000 }
+        ];
+
+
+        // select the svg container first
+        const svg = d3.select(".canvas")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            // .style("padding", "10px")
+            .style("background", "pink");
+
+        const graph = svg.append("g")
+            .attr("width", graphWidth)
+            .attr("height", graphHeight)
+            .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+        // create axes groups
+        const xAxisGroup = graph.append("g")
+            .attr("transform", `translate(0, ${graphHeight})`);
+
+        const yAxisGroup = graph.append("g");
+
+        const xScale = d3.scaleBand()
+            .domain(data.map((d) => d.name))
+            .range([0, graphWidth])
+            // .round(true)
+            // .paddingOuter(.2)
+            // .paddingInner(.2)
+            .padding(.2); // both
+
+        const yScale = d3.scaleLinear()
+            .domain([0, d3.max(data, (d) => d.orders)])
+            .range([graphHeight, 0]);
+
+
+        // join the data to rects
+        const rects = graph.selectAll("rect")
+            .data(data);
+
+        // color function
+        const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+        // add attrs to circs already in the DOM
+        rects.enter()
+            .append("rect")
+            .attr("width", xScale.bandwidth) // x.bandwidth()
+            .attr("height", (d) => graphHeight - yScale(d.orders))
+            // .attr("fill", "orange")
+            .attr("fill", (d) => color(d.name))
+            .attr("x", (d) => xScale(d.name))
+            .attr("y", (d) => yScale(d.orders));
+
+
+        // create & call axesit
+        const xAxis = d3.axisBottom(xScale);
+        const yAxis = d3.axisLeft(yScale)
+            // .ticks(3)
+            .tickFormat((d) => d + " orders");
+
+        xAxisGroup.call(xAxis);
+        yAxisGroup.call(yAxis);
+
+        // rotate x-labels
+        xAxisGroup.selectAll("text")
+            .attr("fill", "orange")
+            .attr("transform", "rotate(-40)")
+            .attr("text-anchor", "end")
+
+    </script>
+</body>
+
+</html>
