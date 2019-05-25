@@ -74,6 +74,9 @@
         // color
         const color = d3.scaleOrdinal(d3.schemeCategory10);
 
+        // transition
+        const t = d3.transition().duration(500);
+
         // the update function
         const update = (data) => {
 
@@ -119,10 +122,11 @@
             // update current shapes in DOM
             rects.attr("width", x.bandwidth)
                 .attr("fill", (d) => color(d.name))
-                .attr("x", d => x(d.name))
-                .transition().duration(500)
-                .attr("height", d => graphHeight - y(d.orders))
-                .attr("y", d => y(d.orders));
+                .attr("x", d => x(d.name));
+            // merge
+            // .transition(t)
+            // .attr("height", d => graphHeight - y(d.orders))
+            // .attr("y", d => y(d.orders));
 
             rects.enter()
                 .append("rect")
@@ -132,7 +136,8 @@
                 .attr("x", (d) => x(d.name))
                 .attr("y", (d) => y(d.orders))
                 .attr("y", d => graphHeight) // start
-                .transition().duration(500)
+                .merge(rects)
+                .transition(t)
                 .attr("height", d => graphHeight - y(d.orders)) // end
                 .attr("y", d => y(d.orders)); // end
 
