@@ -15,22 +15,67 @@ const pie = d3
   .sort(null)
   .value((d) => d.cost); // the value we are evaluating to create the pie angles
 
-const angles = pie([
-  { name: "rent", cost: 500 },
-  { name: "bills", cost: 300 },
-  { name: "gaming", cost: 200 }
-]);
-
-console.log(angles);
-
 const arcPath = d3
   .arc()
   .outerRadius(dims.radius)
   .innerRadius(dims.radius / 2);
 
-console.log(arcPath(angles[0]));
+// ordianl colour scale
+const colour = d3.scaleOrdinal(d3["schemeSet3"]);
 
-graph
-  .append("path")
-  .attr("d", arcPath(angles[0]))
-  .attr("fill", "orange");
+// update function
+const update = (data) => {
+  console.log(data);
+
+  // update colour scale domain
+  colour.domain(data.map((d) => d.name));
+
+  // join enhanced (pie) data to path elements
+  const paths = graph.selectAll("path").data(pie(data));
+
+  console.log(paths);
+
+  // handle the exit selection
+  paths.exit().remove();
+
+  // handle the current DOM path updates
+  paths.attr("d", arcPath);
+
+  paths
+    .enter()
+    .append("path")
+    .attr("class", "arc")
+    .attr("d", arcPath) // the same as .attr("d", (d) => arcPath(d))
+    .attr("stroke", "#fff")
+    .attr("stroke-width", 3)
+    .attr("fill", (d) => colour(d.data.name));
+};
+
+// data array and firestore
+var data = [];
+
+db.collection("expenses")
+  .orderBy("cost")
+  .onSnapshot((res) => {
+    res.docChanges().forEach((change) => {
+      const doc = { ...change.doc.data(), id: change.doc.id };
+
+      switch (change.type) {
+        case "added":
+          data.push(doc);
+          break;
+        case "modified":
+          const index = data.findIndex((item) => item.id == doc.id);
+          data[index] = doc;
+          break;
+        case "removed":
+          data = data.filter((item) => item.id !== doc.id);
+          break;
+        default:
+          break;
+      }
+    });
+
+    // call the update function
+    update(data);
+  });
