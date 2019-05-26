@@ -33,6 +33,19 @@ const legend = d3
   .shapePadding(10)
   .scale(colour);
 
+// tip
+const tip = d3
+  .tip()
+  .attr("class", "tip card") // card is materialize css class
+  .html((d) => {
+    let content = `<div class="name">${d.data.name}</div>`;
+    content += `<div class="cost">£${d.data.cost}</div>`;
+    content += `<div class="delete">Click slice to delete</div>`;
+    return content;
+  });
+
+graph.call(tip);
+
 // update function
 const update = (data) => {
   console.log(data);
@@ -82,8 +95,16 @@ const update = (data) => {
   // add events
   graph
     .selectAll("path")
-    .on("mouseover", handleMouseOver)
-    .on("mouseout", handleMouseOut)
+    // .on("mouseover", handleMouseOver)
+    .on("mouseover", (d, i, n) => {
+      tip.show(d, n[i]); // in es5 function you can use 'this' -> `tip.show(d, this)` // data, context
+      handleMouseOver(d, i, n);
+    })
+    // .on("mouseout", handleMouseOut)
+    .on("mouseout", (d, i, n) => {
+      tip.hide();
+      handleMouseOut(d, i, n);
+    })
     .on("click", handleClick);
 };
 
