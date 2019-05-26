@@ -28,6 +28,16 @@ const xAxisGroup = graph
 
 const yAxisGroup = graph.append("g").attr("class", "y-axis");
 
+// d3 line path generator
+const line = d3
+  .line()
+  //.curve(d3.curveCardinal)
+  .x((d) => x(new Date(d.date)))
+  .y((d) => y(d.distance));
+
+// line path element
+const path = graph.append("path");
+
 // update function
 const update = (data) => {
   console.log(data); // all points
@@ -36,9 +46,20 @@ const update = (data) => {
   data = data.filter((item) => item.activity == activity);
   console.log(data); // points only with current activity
 
+  // sort the data based on date objects
+  data.sort((a, b) => new Date(a.date) - new Date(b.date)); // must be sorted because the firestore stores an unsorted object, otherwise we will have incorrect lines, but now it's not necessary, since we have the ability to sort the response from firestore using `db.collection("activities").orderBy("date")`
+
   // set scale domains
   x.domain(d3.extent(data, (d) => new Date(d.date)));
   y.domain([0, d3.max(data, (d) => d.distance)]);
+
+  // update path data
+  path
+    .data([data]) // data must be an array for line generator
+    .attr("fill", "none")
+    .attr("stroke", "#00bfa5")
+    .attr("stroke-width", "2")
+    .attr("d", line);
 
   // create circles for points
   const circles = graph.selectAll("circle").data(data);
