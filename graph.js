@@ -36,7 +36,12 @@ const update = (data) => {
   console.log(paths);
 
   // handle the exit selection
-  paths.exit().remove();
+  paths
+    .exit()
+    .transition()
+    .duration(750)
+    .attrTween("d", arcTweenExit)
+    .remove();
 
   // handle the current DOM path updates
   paths.attr("d", arcPath);
@@ -45,10 +50,13 @@ const update = (data) => {
     .enter()
     .append("path")
     .attr("class", "arc")
-    .attr("d", arcPath) // the same as .attr("d", (d) => arcPath(d))
+    // .attr("d", arcPath) // the same as .attr("d", (d) => arcPath(d)) // now we don't need starting position
     .attr("stroke", "#fff")
     .attr("stroke-width", 3)
-    .attr("fill", (d) => colour(d.data.name));
+    .attr("fill", (d) => colour(d.data.name))
+    .transition()
+    .duration(750)
+    .attrTween("d", arcTweenEnter);
 };
 
 // data array and firestore
@@ -79,3 +87,21 @@ db.collection("expenses")
     // call the update function
     update(data);
   });
+
+const arcTweenEnter = (d) => {
+  var i = d3.interpolate(d.endAngle - 0.1, d.startAngle);
+
+  return function(t) {
+    d.startAngle = i(t);
+    return arcPath(d);
+  };
+};
+
+const arcTweenExit = (d) => {
+  var i = d3.interpolate(d.startAngle, d.endAngle);
+
+  return function(t) {
+    d.startAngle = i(t);
+    return arcPath(d);
+  };
+};
