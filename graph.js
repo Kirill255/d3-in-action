@@ -151,7 +151,7 @@ function arcTweenUpdate(d) {
 const handleMouseOver = (d, i, n) => {
   // console.log(n[i]); // n[i] = this in es5 function, like `function handleMouseOver(d, i, n) {console.log(this)};`
   d3.select(n[i])
-    .transition()
+    .transition("changeSliceFill") // fix bug with transitions, several transitions conflicted, just search 'd3 named transitions'
     .duration(300)
     .attr("fill", "#fff");
 };
@@ -159,7 +159,7 @@ const handleMouseOver = (d, i, n) => {
 const handleMouseOut = (d, i, n) => {
   // console.log(n[i]);
   d3.select(n[i])
-    .transition()
+    .transition("changeSliceFill") // fix bug with transitions, several transitions conflicted, just search 'd3 named transitions'
     .duration(300)
     .attr("fill", colour(d.data.name));
 };
