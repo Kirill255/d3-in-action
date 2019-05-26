@@ -30,7 +30,11 @@ const yAxisGroup = graph.append("g").attr("class", "y-axis");
 
 // update function
 const update = (data) => {
-  console.log(data);
+  console.log(data); // all points
+
+  // filter data based on current activity
+  data = data.filter((item) => item.activity == activity);
+  console.log(data); // points only with current activity
 
   // set scale domains
   x.domain(d3.extent(data, (d) => new Date(d.date)));
